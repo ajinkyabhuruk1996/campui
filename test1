@@ -1,0 +1,1 @@
+  const passwordRegex = /^(?=.\d)(?=.[A-Z])(?=.*[\W_]).{8,}$/;

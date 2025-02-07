@@ -1,0 +1,51 @@
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import GetMaxLoginsField from './GetMaxLoginsField';
+import { Grid, TextField } from '@mui/material';
+
+describe('GetMaxLoginsField Component', () => {
+  const mockOnChange = jest.fn();
+  
+  const defaultProps = {
+    maxLogins: {
+      hidden: false,
+      value: 5,
+      onChange: mockOnChange,
+      placeholder: '0 or empty for no login limits'
+    }
+  };
+
+  test('renders the TextField when not hidden', () => {
+    render(<GetMaxLoginsField {...defaultProps} />);
+    
+    const inputField = screen.getByLabelText('Max Logins Allowed:');
+    expect(inputField).toBeInTheDocument();
+    expect(inputField).toHaveValue(5);
+  });
+
+  test('does not render anything when hidden is true', () => {
+    const hiddenProps = { ...defaultProps, maxLogins: { ...defaultProps.maxLogins, hidden: true } };
+    
+    render(<GetMaxLoginsField {...hiddenProps} />);
+    
+    expect(screen.queryByLabelText('Max Logins Allowed:')).not.toBeInTheDocument();
+  });
+
+  test('calls onChange when input value changes', () => {
+    render(<GetMaxLoginsField {...defaultProps} />);
+    
+    const inputField = screen.getByLabelText('Max Logins Allowed:');
+    
+    fireEvent.change(inputField, { target: { value: '10' } });
+    
+    expect(mockOnChange).toHaveBeenCalledWith('10');
+  });
+
+  test('renders placeholder correctly', () => {
+    render(<GetMaxLoginsField {...defaultProps} />);
+    
+    const inputField = screen.getByPlaceholderText('0 or empty for no login limits');
+    expect(inputField).toBeInTheDocument();
+  });
+});
